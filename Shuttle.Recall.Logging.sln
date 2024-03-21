@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shuttle.Recall.Logging", "Shuttle.Recall.Logging\Shuttle.Recall.Logging.csproj", "{F24CBCDF-F116-4005-9AD5-E58E50B62A27}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3B2973EF-D99B-40BA-8534-36CB21D6E1DF}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F24CBCDF-F116-4005-9AD5-E58E50B62A27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F24CBCDF-F116-4005-9AD5-E58E50B62A27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F24CBCDF-F116-4005-9AD5-E58E50B62A27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F24CBCDF-F116-4005-9AD5-E58E50B62A27}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6DD7470E-DB82-45D5-A1F8-4C63FD8377CC}
+	EndGlobalSection
+EndGlobal
