@@ -1,15 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Shuttle.Core.Contract;
 using Shuttle.Core.Pipelines;
-using Shuttle.Core.PipelineTransaction;
 
 namespace Shuttle.Recall.Logging
 {
     public class EventProcessingPipelineObserver : PipelineObserver<EventProcessingPipelineLogger>,
-        IPipelineObserver<OnStartTransactionScope>,
-        IPipelineObserver<OnAfterStartTransactionScope>,
         IPipelineObserver<OnGetProjectionEvent>,
         IPipelineObserver<OnAfterGetProjectionEvent>,
         IPipelineObserver<OnGetProjectionEventEnvelope>,
@@ -17,33 +13,11 @@ namespace Shuttle.Recall.Logging
         IPipelineObserver<OnProcessEvent>,
         IPipelineObserver<OnAfterProcessEvent>,
         IPipelineObserver<OnAcknowledgeEvent>,
-        IPipelineObserver<OnAfterAcknowledgeEvent>,
-        IPipelineObserver<OnCompleteTransactionScope>,
-        IPipelineObserver<OnDisposeTransactionScope>
+        IPipelineObserver<OnAfterAcknowledgeEvent>
     {
         public EventProcessingPipelineObserver(ILogger<EventProcessingPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration)
             : base(logger, recallLoggingConfiguration)
         {
-        }
-
-        public void Execute(OnStartTransactionScope pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnStartTransactionScope pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnAfterStartTransactionScope pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnAfterStartTransactionScope pipelineEvent)
-        {
-            await Trace(pipelineEvent);
         }
 
         public void Execute(OnGetProjectionEvent pipelineEvent)
@@ -124,26 +98,6 @@ namespace Shuttle.Recall.Logging
         }
 
         public async Task ExecuteAsync(OnAfterAcknowledgeEvent pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnCompleteTransactionScope pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnCompleteTransactionScope pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnDisposeTransactionScope pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnDisposeTransactionScope pipelineEvent)
         {
             await Trace(pipelineEvent);
         }
