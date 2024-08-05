@@ -1,21 +1,21 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Shuttle.Core.Contract;
 using Shuttle.Core.Pipelines;
+using System.Threading.Tasks;
+using System.Threading;
+using System;
 
 namespace Shuttle.Recall.Logging
 {
-    public class EventProcessingPipelineLogger : IHostedService
+    public class EventProcessorStartupPipelineLogger : IHostedService
     {
-        private readonly Type _pipelineType = typeof(EventProcessingPipeline);
-        private readonly ILogger<EventProcessingPipelineLogger> _logger;
+        private readonly Type _pipelineType = typeof(EventProcessorStartupPipeline);
+        private readonly ILogger<EventProcessorStartupPipelineLogger> _logger;
         private readonly IPipelineFactory _pipelineFactory;
         private readonly IRecallLoggingConfiguration _recallLoggingConfiguration;
 
-        public EventProcessingPipelineLogger(ILogger<EventProcessingPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration, IPipelineFactory pipelineFactory)
+        public EventProcessorStartupPipelineLogger(ILogger<EventProcessorStartupPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration, IPipelineFactory pipelineFactory)
         {
             _logger = Guard.AgainstNull(logger, nameof(logger));
             _recallLoggingConfiguration = Guard.AgainstNull(recallLoggingConfiguration, nameof(recallLoggingConfiguration));
@@ -39,7 +39,7 @@ namespace Shuttle.Recall.Logging
                 return;
             }
 
-            args.Pipeline.RegisterObserver(new EventProcessingPipelineObserver(_logger, _recallLoggingConfiguration));
+            args.Pipeline.RegisterObserver(new EventProcessorStartupPipelineObserver(_logger, _recallLoggingConfiguration));
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)

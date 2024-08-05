@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Shuttle.Core.Contract;
@@ -40,7 +41,7 @@ namespace Shuttle.Recall.Logging
 
             Increment(type);
 
-            _logger.LogTrace($"[{type.Name} (thread {System.Threading.Thread.CurrentThread.ManagedThreadId}) / {_eventCounts[type]}] : pipeline = {pipelineEvent.Pipeline.GetType().FullName}{(string.IsNullOrEmpty(message) ? string.Empty : $" / {message}")}");
+            _logger.LogTrace($"[{type.Name}] : pipeline = {pipelineEvent.Pipeline.GetType().FullName}{(string.IsNullOrEmpty(message) ? string.Empty : $" / {message}")} / call count = {_eventCounts[type]} / managed thread id = {Thread.CurrentThread.ManagedThreadId}");
 
             await Task.CompletedTask;
         }
@@ -78,7 +79,7 @@ namespace Shuttle.Recall.Logging
 
             var message = $"exception = '{pipelineEvent.Pipeline.Exception?.AllMessages()}'";
 
-            _logger.LogError($"[{type.Name} (thread {System.Threading.Thread.CurrentThread.ManagedThreadId}) / {_eventCounts[type]}] : pipeline = {pipelineEvent.Pipeline.GetType().FullName}{(string.IsNullOrEmpty(message) ? string.Empty : $" / {message}")}");
+            _logger.LogError($"[{type.Name}] : pipeline = {pipelineEvent.Pipeline.GetType().FullName}{(string.IsNullOrEmpty(message) ? string.Empty : $" / {message}")} / call count = {_eventCounts[type]} / managed thread id = {Thread.CurrentThread.ManagedThreadId}");
 
             await Task.CompletedTask;
         }

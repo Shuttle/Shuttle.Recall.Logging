@@ -22,6 +22,13 @@ namespace Shuttle.Recall.Logging
             });
 
             services.AddHostedService<EventProcessingPipelineLogger>();
+            services.AddHostedService<AddProjectionPipelineLogger>();
+            services.AddHostedService<AssembleEventEnvelopePipelineLogger>();
+            services.AddHostedService<EventProcessorStartupPipelineLogger>();
+            services.AddHostedService<GetEventEnvelopePipelineLogger>();
+            services.AddHostedService<GetEventStreamPipelineLogger>();
+            services.AddHostedService<RemoveEventStreamPipelineLogger>();
+            services.AddHostedService<SaveEventStreamPipelineLogger>();
             services.AddHostedService<ThreadingLogger>();
 
             services.AddSingleton<IRecallLoggingConfiguration, RecallLoggingConfiguration>();
