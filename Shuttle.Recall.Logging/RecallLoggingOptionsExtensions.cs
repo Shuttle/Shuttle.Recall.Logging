@@ -5,22 +5,21 @@ namespace Shuttle.Recall.Logging
 {
     public static class RecallLoggingOptionsExtensions
     {
-        public static RecallLoggingOptions AddPipelineType<T>(
-            this RecallLoggingOptions recallLoggingOptions)
+        public static RecallLoggingOptions AddPipelineType<T>(this RecallLoggingOptions recallLoggingOptions)
         {
             return recallLoggingOptions.AddPipelineType(typeof(T));
         }
 
         public static RecallLoggingOptions AddPipelineType(this RecallLoggingOptions recallLoggingOptions, Type type)
         {
-            Guard.AgainstNull(type, nameof(type));
+            Guard.AgainstNull(type);
 
             if (recallLoggingOptions.PipelineTypes == null)
             {
                 throw new InvalidOperationException(Resources.PipelineTypesNullException);
             }
 
-            recallLoggingOptions.PipelineTypes.Add(type.AssemblyQualifiedName);
+            recallLoggingOptions.PipelineTypes.Add(Guard.AgainstNullOrEmptyString(type.AssemblyQualifiedName));
 
             return recallLoggingOptions;
         }
@@ -32,14 +31,14 @@ namespace Shuttle.Recall.Logging
 
         public static RecallLoggingOptions AddPipelineEventType(this RecallLoggingOptions recallLoggingOptions, Type type)
         {
-            Guard.AgainstNull(type, nameof(type));
+            Guard.AgainstNull(type);
 
             if (recallLoggingOptions.PipelineEventTypes == null)
             {
                 throw new InvalidOperationException(Resources.PipelineTypesNullException);
             }
 
-            recallLoggingOptions.PipelineEventTypes.Add(type.AssemblyQualifiedName);
+            recallLoggingOptions.PipelineEventTypes.Add(Guard.AgainstNullOrEmptyString(type.AssemblyQualifiedName));
 
             return recallLoggingOptions;
         }

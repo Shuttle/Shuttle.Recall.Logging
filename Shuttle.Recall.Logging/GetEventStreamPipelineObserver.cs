@@ -11,58 +11,34 @@ namespace Shuttle.Recall.Logging
         IPipelineObserver<OnAssembleEventStream>,
         IPipelineObserver<OnAfterAssembleEventStream>
     {
-        public GetEventStreamPipelineObserver(ILogger<GetEventStreamPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration) : base(logger, recallLoggingConfiguration)
+        public GetEventStreamPipelineObserver(ILogger<GetEventStreamPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration)
+            : base(logger, recallLoggingConfiguration)
         {
         }
 
-        public void Execute(OnBeforeGetStreamEvents pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnBeforeGetStreamEvents> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnBeforeGetStreamEvents pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnGetStreamEvents> pipelineContext)
         {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
 
-        public void Execute(OnGetStreamEvents pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterGetStreamEvents> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnGetStreamEvents pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAssembleEventStream> pipelineContext)
         {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
 
-        public void Execute(OnAfterGetStreamEvents pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterAssembleEventStream> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnAfterGetStreamEvents pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnAssembleEventStream pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnAssembleEventStream pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnAfterAssembleEventStream pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnAfterAssembleEventStream pipelineEvent)
-        {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
     }
 }

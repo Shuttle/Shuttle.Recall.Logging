@@ -9,38 +9,24 @@ namespace Shuttle.Recall.Logging
         IPipelineObserver<OnRemoveEventStream>,
         IPipelineObserver<OnAfterRemoveEventStream>
     {
-        public RemoveEventStreamPipelineObserver(ILogger<RemoveEventStreamPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration) : base(logger, recallLoggingConfiguration)
+        public RemoveEventStreamPipelineObserver(ILogger<RemoveEventStreamPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration) 
+            : base(logger, recallLoggingConfiguration)
         {
         }
 
-        public void Execute(OnBeforeRemoveEventStream pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnBeforeRemoveEventStream> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnBeforeRemoveEventStream pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnRemoveEventStream> pipelineContext)
         {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
 
-        public void Execute(OnRemoveEventStream pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterRemoveEventStream> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnRemoveEventStream pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnAfterRemoveEventStream pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnAfterRemoveEventStream pipelineEvent)
-        {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
     }
 }

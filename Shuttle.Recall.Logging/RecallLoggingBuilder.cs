@@ -6,21 +6,19 @@ namespace Shuttle.Recall.Logging
 {
     public class RecallLoggingBuilder
     {
-        private RecallLoggingOptions _recallLoggingOptions = new RecallLoggingOptions();
+        private RecallLoggingOptions _recallLoggingOptions = new();
 
         public RecallLoggingOptions Options
         {
             get => _recallLoggingOptions;
-            set => _recallLoggingOptions = value ?? throw new ArgumentNullException(nameof(value));
+            set => _recallLoggingOptions = Guard.AgainstNull(value);
         }
 
         public IServiceCollection Services { get; }
 
         public RecallLoggingBuilder(IServiceCollection services)
         {
-            Guard.AgainstNull(services, nameof(services));
-
-            Services = services;
+            Services = Guard.AgainstNull(services);
         }
     }
 }

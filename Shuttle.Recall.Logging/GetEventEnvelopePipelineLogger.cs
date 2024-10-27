@@ -17,9 +17,9 @@ namespace Shuttle.Recall.Logging
 
         public GetEventEnvelopePipelineLogger(ILogger<GetEventEnvelopePipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration, IPipelineFactory pipelineFactory)
         {
-            _logger = Guard.AgainstNull(logger, nameof(logger));
-            _recallLoggingConfiguration = Guard.AgainstNull(recallLoggingConfiguration, nameof(recallLoggingConfiguration));
-            _pipelineFactory = Guard.AgainstNull(pipelineFactory, nameof(pipelineFactory));
+            _logger = Guard.AgainstNull(logger);
+            _recallLoggingConfiguration = Guard.AgainstNull(recallLoggingConfiguration);
+            _pipelineFactory = Guard.AgainstNull(pipelineFactory);
 
             if (_recallLoggingConfiguration.ShouldLogPipelineType(_pipelineType))
             {
@@ -32,7 +32,7 @@ namespace Shuttle.Recall.Logging
             await Task.CompletedTask;
         }
 
-        private void OnPipelineCreated(object sender, PipelineEventArgs args)
+        private void OnPipelineCreated(object? sender, PipelineEventArgs args)
         {
             if (args.Pipeline.GetType() != _pipelineType)
             {
@@ -47,7 +47,6 @@ namespace Shuttle.Recall.Logging
             if (_recallLoggingConfiguration.ShouldLogPipelineType(_pipelineType))
             {
                 _pipelineFactory.PipelineCreated -= OnPipelineCreated;
-
             }
 
             await Task.CompletedTask;

@@ -14,88 +14,49 @@ namespace Shuttle.Recall.Logging
         IPipelineObserver<OnDeserializeEvent>,
         IPipelineObserver<OnAfterDeserializeEvent>
     {
-        public GetEventEnvelopePipelineObserver(ILogger<GetEventEnvelopePipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration) : base(logger, recallLoggingConfiguration)
+        public GetEventEnvelopePipelineObserver(ILogger<GetEventEnvelopePipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration) 
+            : base(logger, recallLoggingConfiguration)
         {
         }
 
-        public void Execute(OnDeserializeEventEnvelope pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnDeserializeEventEnvelope> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnDeserializeEventEnvelope pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterDeserializeEventEnvelope> pipelineContext)
         {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
 
-        public void Execute(OnAfterDeserializeEventEnvelope pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnDecompressEvent> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnAfterDeserializeEventEnvelope pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterDecompressEvent> pipelineContext)
         {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
 
-        public void Execute(OnDecompressEvent pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnDecryptEvent> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnDecompressEvent pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterDecryptEvent> pipelineContext)
         {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
 
-        public void Execute(OnAfterDecompressEvent pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnDeserializeEvent> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnAfterDecompressEvent pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterDeserializeEvent> pipelineContext)
         {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnDecryptEvent pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnDecryptEvent pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnAfterDecryptEvent pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnAfterDecryptEvent pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnDeserializeEvent pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnDeserializeEvent pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnAfterDeserializeEvent pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnAfterDeserializeEvent pipelineEvent)
-        {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
     }
 }

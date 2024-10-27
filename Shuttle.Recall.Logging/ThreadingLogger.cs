@@ -18,11 +18,9 @@ namespace Shuttle.Recall.Logging
 
         public ThreadingLogger(IOptions<RecallLoggingOptions> serviceBusLoggingOptions, ILogger<ThreadingLogger> logger, IPipelineFactory pipelineFactory)
         {
-            Guard.AgainstNull(serviceBusLoggingOptions, nameof(serviceBusLoggingOptions));
-
-            _recallLoggingOptions = Guard.AgainstNull(serviceBusLoggingOptions.Value, nameof(serviceBusLoggingOptions.Value));
-            _logger = Guard.AgainstNull(logger, nameof(logger));
-            _pipelineFactory = Guard.AgainstNull(pipelineFactory, nameof(pipelineFactory));
+            _recallLoggingOptions = Guard.AgainstNull(Guard.AgainstNull(serviceBusLoggingOptions).Value);
+            _logger = Guard.AgainstNull(logger);
+            _pipelineFactory = Guard.AgainstNull(pipelineFactory);
 
             if (_recallLoggingOptions.Threading)
             {
@@ -35,7 +33,7 @@ namespace Shuttle.Recall.Logging
             await Task.CompletedTask;
         }
 
-        private void OnPipelineCreated(object sender, PipelineEventArgs args)
+        private void OnPipelineCreated(object? sender, PipelineEventArgs args)
         {
             if (args.Pipeline.GetType() != _pipelineType)
             {
@@ -50,8 +48,6 @@ namespace Shuttle.Recall.Logging
             if (_recallLoggingOptions.Threading)
             {
                 _pipelineFactory.PipelineCreated -= OnPipelineCreated;
-
-
             }
 
             await Task.CompletedTask;

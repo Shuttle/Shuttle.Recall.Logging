@@ -8,9 +8,7 @@ namespace Shuttle.Recall.Logging
     {
         public static IServiceCollection AddRecallLogging(this IServiceCollection services, Action<RecallLoggingBuilder>? builder = null)
         {
-            Guard.AgainstNull(services, nameof(services));
-
-            var recallLoggingBuilder = new RecallLoggingBuilder(services);
+            var recallLoggingBuilder = new RecallLoggingBuilder(Guard.AgainstNull(services));
 
             builder?.Invoke(recallLoggingBuilder);
 

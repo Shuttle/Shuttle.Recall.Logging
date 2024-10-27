@@ -9,38 +9,24 @@ namespace Shuttle.Recall.Logging
         IPipelineObserver<OnAddProjection>,
         IPipelineObserver<OnAfterAddProjection>
     {
-        public AddProjectionPipelineObserver(ILogger<AddProjectionPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration) : base(logger, recallLoggingConfiguration)
+        public AddProjectionPipelineObserver(ILogger<AddProjectionPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration) 
+            : base(logger, recallLoggingConfiguration)
         {
         }
 
-        public void Execute(OnBeforeAddProjection pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnBeforeAddProjection> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnBeforeAddProjection pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAddProjection> pipelineContext)
         {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
 
-        public void Execute(OnAddProjection pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterAddProjection> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnAddProjection pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnAfterAddProjection pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnAfterAddProjection pipelineEvent)
-        {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
     }
 }

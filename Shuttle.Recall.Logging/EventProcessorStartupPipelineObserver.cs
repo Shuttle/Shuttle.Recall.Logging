@@ -12,68 +12,39 @@ namespace Shuttle.Recall.Logging
         IPipelineObserver<OnStartThreadPools>,
         IPipelineObserver<OnAfterStartThreadPools>
     {
-        public EventProcessorStartupPipelineObserver(ILogger<EventProcessorStartupPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration) : base(logger, recallLoggingConfiguration)
+        public EventProcessorStartupPipelineObserver(ILogger<EventProcessorStartupPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration)
+            : base(logger, recallLoggingConfiguration)
         {
         }
 
-        public void Execute(OnStartEventProcessing pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnStartEventProcessing> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnStartEventProcessing pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterStartEventProcessing> pipelineContext)
         {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
 
-        public void Execute(OnAfterStartEventProcessing pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnConfigureThreadPools> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnAfterStartEventProcessing pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterConfigureThreadPools> pipelineContext)
         {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
 
-        public void Execute(OnConfigureThreadPools pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnStartThreadPools> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnConfigureThreadPools pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterStartThreadPools> pipelineContext)
         {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnAfterConfigureThreadPools pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnAfterConfigureThreadPools pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnStartThreadPools pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnStartThreadPools pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnAfterStartThreadPools pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnAfterStartThreadPools pipelineEvent)
-        {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
     }
 }

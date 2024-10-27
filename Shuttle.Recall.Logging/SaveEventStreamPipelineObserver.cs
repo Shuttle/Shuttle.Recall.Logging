@@ -13,78 +13,44 @@ namespace Shuttle.Recall.Logging
         IPipelineObserver<OnCommitEventStream>,
         IPipelineObserver<OnAfterCommitEventStream>
     {
-        public SaveEventStreamPipelineObserver(ILogger<SaveEventStreamPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration) : base(logger, recallLoggingConfiguration)
+        public SaveEventStreamPipelineObserver(ILogger<SaveEventStreamPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration)
+            : base(logger, recallLoggingConfiguration)
         {
         }
 
-        public void Execute(OnAssembleEventEnvelopes pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAssembleEventEnvelopes> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnAssembleEventEnvelopes pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterAssembleEventEnvelopes> pipelineContext)
         {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
 
-        public void Execute(OnAfterAssembleEventEnvelopes pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnBeforeSavePrimitiveEvents> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnAfterAssembleEventEnvelopes pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnSavePrimitiveEvents> pipelineContext)
         {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
 
-        public void Execute(OnBeforeSavePrimitiveEvents pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterSavePrimitiveEvents> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
+            await TraceAsync(pipelineContext);
         }
 
-        public async Task ExecuteAsync(OnBeforeSavePrimitiveEvents pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnCommitEventStream> pipelineContext)
         {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
 
-        public void Execute(OnSavePrimitiveEvents pipelineEvent)
+        public async Task ExecuteAsync(IPipelineContext<OnAfterCommitEventStream> pipelineContext)
         {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnSavePrimitiveEvents pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnAfterSavePrimitiveEvents pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnAfterSavePrimitiveEvents pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnCommitEventStream pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnCommitEventStream pipelineEvent)
-        {
-            await Trace(pipelineEvent);
-        }
-
-        public void Execute(OnAfterCommitEventStream pipelineEvent)
-        {
-            Trace(pipelineEvent).GetAwaiter().GetResult();
-        }
-
-        public async Task ExecuteAsync(OnAfterCommitEventStream pipelineEvent)
-        {
-            await Trace(pipelineEvent);
+            await TraceAsync(pipelineContext);
         }
     }
 }
