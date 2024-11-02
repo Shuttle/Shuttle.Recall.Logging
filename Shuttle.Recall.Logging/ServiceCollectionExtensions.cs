@@ -6,7 +6,7 @@ namespace Shuttle.Recall.Logging
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddRecallLogging(this IServiceCollection services, Action<RecallLoggingBuilder>? builder = null)
+        public static IServiceCollection AddEventStoreLogging(this IServiceCollection services, Action<RecallLoggingBuilder>? builder = null)
         {
             var recallLoggingBuilder = new RecallLoggingBuilder(Guard.AgainstNull(services));
 
