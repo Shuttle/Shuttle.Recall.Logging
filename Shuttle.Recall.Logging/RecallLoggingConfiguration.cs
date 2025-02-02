@@ -5,56 +5,54 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shuttle.Core.Contract;
 
-namespace Shuttle.Recall.Logging
+namespace Shuttle.Recall.Logging;
+
+public class RecallLoggingConfiguration : IRecallLoggingConfiguration
 {
-    public class RecallLoggingConfiguration : IRecallLoggingConfiguration
+    private readonly List<string> _pipelineEventTypes = [];
+    private readonly List<string> _pipelineTypes = [];
+
+    public RecallLoggingConfiguration(ILogger<RecallLoggingConfiguration> logger, IOptions<RecallLoggingOptions> recallLoggingOptions)
     {
-        private readonly List<Type> _pipelineTypes = new List<Type>();
-        private readonly List<Type> _pipelineEventTypes = new List<Type>();
-        
-        public RecallLoggingConfiguration(IOptions<RecallLoggingOptions> recallLoggingOptions, ILogger<RecallLoggingConfiguration> logger)
+        Guard.AgainstNull(Guard.AgainstNull(recallLoggingOptions).Value);
+        Guard.AgainstNull(logger);
+
+        foreach (var pipelineType in recallLoggingOptions.Value.PipelineTypes)
         {
-            Guard.AgainstNull(recallLoggingOptions, nameof(recallLoggingOptions));
-            Guard.AgainstNull(recallLoggingOptions.Value, nameof(recallLoggingOptions.Value));
-            Guard.AgainstNull(logger, nameof(logger));
-
-            foreach (var pipelineType in recallLoggingOptions.Value.PipelineTypes)
+            try
             {
-                try
-                {
-                    _pipelineTypes.Add(Type.GetType(pipelineType));
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex.Message);
-                }    
+                _pipelineTypes.Add(pipelineType);
             }
-
-            foreach (var pipelineEventType in recallLoggingOptions.Value.PipelineEventTypes)
+            catch (Exception ex)
             {
-                try
-                {
-                    _pipelineEventTypes.Add(Type.GetType(pipelineEventType));
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex.Message);
-                }
+                logger.LogError(ex.Message);
             }
         }
 
-        public bool ShouldLogPipelineType(Type pipelineType)
+        foreach (var pipelineEventType in recallLoggingOptions.Value.PipelineEventTypes)
         {
-            Guard.AgainstNull(pipelineType, nameof(pipelineType));
-
-            return !_pipelineTypes.Any() || _pipelineTypes.Contains(pipelineType);
+            try
+            {
+                _pipelineEventTypes.Add($"{pipelineEventType.Type}-{pipelineEventType.LogLevel?.ToString() ?? "*"}");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+            }
         }
+    }
 
-        public bool ShouldLogPipelineEventType(Type pipelineEventType)
-        {
-            Guard.AgainstNull(pipelineEventType, nameof(pipelineEventType));
+    public bool ShouldLogPipelineType(Type pipelineType)
+    {
+        Guard.AgainstNull(pipelineType);
 
-            return !_pipelineEventTypes.Any() || _pipelineEventTypes.Contains(pipelineEventType);
-        }
+        return !_pipelineTypes.Any() || _pipelineTypes.Contains(Guard.AgainstNullOrEmptyString(pipelineType.FullName));
+    }
+
+    public bool ShouldLogPipelineEventType(Type pipelineEventType, LogLevel? logLevel = null)
+    {
+        Guard.AgainstNull(pipelineEventType);
+
+        return !_pipelineEventTypes.Any() || _pipelineEventTypes.Contains($"{Guard.AgainstNullOrEmptyString(pipelineEventType.FullName)}-{logLevel?.ToString() ?? "*"}");
     }
 }

@@ -6,51 +6,49 @@ using Microsoft.Extensions.Logging;
 using Shuttle.Core.Contract;
 using Shuttle.Core.Pipelines;
 
-namespace Shuttle.Recall.Logging
+namespace Shuttle.Recall.Logging;
+
+public class EventProcessingPipelineLogger : IHostedService
 {
-    public class EventProcessingPipelineLogger : IHostedService
+    private readonly ILogger<EventProcessingPipelineLogger> _logger;
+    private readonly IPipelineFactory _pipelineFactory;
+    private readonly Type _pipelineType = typeof(EventProcessingPipeline);
+    private readonly IRecallLoggingConfiguration _recallLoggingConfiguration;
+
+    public EventProcessingPipelineLogger(ILogger<EventProcessingPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration, IPipelineFactory pipelineFactory)
     {
-        private readonly Type _pipelineType = typeof(EventProcessingPipeline);
-        private readonly ILogger<EventProcessingPipelineLogger> _logger;
-        private readonly IPipelineFactory _pipelineFactory;
-        private readonly IRecallLoggingConfiguration _recallLoggingConfiguration;
+        _logger = Guard.AgainstNull(logger);
+        _recallLoggingConfiguration = Guard.AgainstNull(recallLoggingConfiguration);
+        _pipelineFactory = Guard.AgainstNull(pipelineFactory);
 
-        public EventProcessingPipelineLogger(ILogger<EventProcessingPipelineLogger> logger, IRecallLoggingConfiguration recallLoggingConfiguration, IPipelineFactory pipelineFactory)
+        if (_recallLoggingConfiguration.ShouldLogPipelineType(_pipelineType))
         {
-            _logger = Guard.AgainstNull(logger, nameof(logger));
-            _recallLoggingConfiguration = Guard.AgainstNull(recallLoggingConfiguration, nameof(recallLoggingConfiguration));
-            _pipelineFactory = Guard.AgainstNull(pipelineFactory, nameof(pipelineFactory));
+            _pipelineFactory.PipelineCreated += OnPipelineCreated;
+        }
+    }
 
-            if (_recallLoggingConfiguration.ShouldLogPipelineType(_pipelineType))
-            {
-                _pipelineFactory.PipelineCreated += OnPipelineCreated;
-            }
+    public async Task StartAsync(CancellationToken cancellationToken)
+    {
+        await Task.CompletedTask;
+    }
+
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        if (_recallLoggingConfiguration.ShouldLogPipelineType(_pipelineType))
+        {
+            _pipelineFactory.PipelineCreated -= OnPipelineCreated;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        await Task.CompletedTask;
+    }
+
+    private void OnPipelineCreated(object? sender, PipelineEventArgs args)
+    {
+        if (args.Pipeline.GetType() != _pipelineType)
         {
-            await Task.CompletedTask;
+            return;
         }
 
-        private void OnPipelineCreated(object sender, PipelineEventArgs args)
-        {
-            if (args.Pipeline.GetType() != _pipelineType)
-            {
-                return;
-            }
-
-            args.Pipeline.RegisterObserver(new EventProcessingPipelineObserver(_logger, _recallLoggingConfiguration));
-        }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            if (_recallLoggingConfiguration.ShouldLogPipelineType(_pipelineType))
-            {
-                _pipelineFactory.PipelineCreated -= OnPipelineCreated;
-
-            }
-
-            await Task.CompletedTask;
-        }
+        args.Pipeline.AddObserver(new EventProcessingPipelineObserver(_logger, _recallLoggingConfiguration));
     }
 }

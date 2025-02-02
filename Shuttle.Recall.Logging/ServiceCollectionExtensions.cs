@@ -2,38 +2,34 @@
 using Microsoft.Extensions.DependencyInjection;
 using Shuttle.Core.Contract;
 
-namespace Shuttle.Recall.Logging
+namespace Shuttle.Recall.Logging;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddEventStoreLogging(this IServiceCollection services, Action<RecallLoggingBuilder>? builder = null)
     {
-        public static IServiceCollection AddRecallLogging(this IServiceCollection services, Action<RecallLoggingBuilder>? builder = null)
+        var recallLoggingBuilder = new RecallLoggingBuilder(Guard.AgainstNull(services));
+
+        builder?.Invoke(recallLoggingBuilder);
+
+        services.AddOptions<RecallLoggingOptions>().Configure(options =>
         {
-            Guard.AgainstNull(services, nameof(services));
+            options.PipelineTypes = recallLoggingBuilder.Options.PipelineTypes;
+            options.PipelineEventTypes = recallLoggingBuilder.Options.PipelineEventTypes;
+            options.Threading = recallLoggingBuilder.Options.Threading;
+        });
 
-            var recallLoggingBuilder = new RecallLoggingBuilder(services);
+        services.AddHostedService<EventProcessingPipelineLogger>();
+        services.AddHostedService<AssembleEventEnvelopePipelineLogger>();
+        services.AddHostedService<EventProcessorStartupPipelineLogger>();
+        services.AddHostedService<GetEventEnvelopePipelineLogger>();
+        services.AddHostedService<GetEventStreamPipelineLogger>();
+        services.AddHostedService<RemoveEventStreamPipelineLogger>();
+        services.AddHostedService<SaveEventStreamPipelineLogger>();
+        services.AddHostedService<ThreadingLogger>();
 
-            builder?.Invoke(recallLoggingBuilder);
+        services.AddSingleton<IRecallLoggingConfiguration, RecallLoggingConfiguration>();
 
-            services.AddOptions<RecallLoggingOptions>().Configure(options =>
-            {
-                options.PipelineTypes = recallLoggingBuilder.Options.PipelineTypes;
-                options.PipelineEventTypes = recallLoggingBuilder.Options.PipelineEventTypes;
-                options.Threading = recallLoggingBuilder.Options.Threading;
-            });
-
-            services.AddHostedService<EventProcessingPipelineLogger>();
-            services.AddHostedService<AddProjectionPipelineLogger>();
-            services.AddHostedService<AssembleEventEnvelopePipelineLogger>();
-            services.AddHostedService<EventProcessorStartupPipelineLogger>();
-            services.AddHostedService<GetEventEnvelopePipelineLogger>();
-            services.AddHostedService<GetEventStreamPipelineLogger>();
-            services.AddHostedService<RemoveEventStreamPipelineLogger>();
-            services.AddHostedService<SaveEventStreamPipelineLogger>();
-            services.AddHostedService<ThreadingLogger>();
-
-            services.AddSingleton<IRecallLoggingConfiguration, RecallLoggingConfiguration>();
-
-            return services;
-        }
+        return services;
     }
 }

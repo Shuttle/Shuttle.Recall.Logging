@@ -1,10 +1,10 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
 
-namespace Shuttle.Recall.Logging
+namespace Shuttle.Recall.Logging;
+
+public interface IRecallLoggingConfiguration
 {
-    public interface IRecallLoggingConfiguration
-    {
-        bool ShouldLogPipelineType(Type pipelineType);
-        bool ShouldLogPipelineEventType(Type pipelineEventType);
-    }
+    bool ShouldLogPipelineEventType(Type pipelineEventType, LogLevel? logLevel = null);
+    bool ShouldLogPipelineType(Type pipelineType);
 }

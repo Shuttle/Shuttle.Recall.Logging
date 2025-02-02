@@ -1,26 +1,22 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Shuttle.Core.Contract;
 
-namespace Shuttle.Recall.Logging
+namespace Shuttle.Recall.Logging;
+
+public class RecallLoggingBuilder
 {
-    public class RecallLoggingBuilder
+    private RecallLoggingOptions _recallLoggingOptions = new();
+
+    public RecallLoggingBuilder(IServiceCollection services)
     {
-        private RecallLoggingOptions _recallLoggingOptions = new RecallLoggingOptions();
-
-        public RecallLoggingOptions Options
-        {
-            get => _recallLoggingOptions;
-            set => _recallLoggingOptions = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        public IServiceCollection Services { get; }
-
-        public RecallLoggingBuilder(IServiceCollection services)
-        {
-            Guard.AgainstNull(services, nameof(services));
-
-            Services = services;
-        }
+        Services = Guard.AgainstNull(services);
     }
+
+    public RecallLoggingOptions Options
+    {
+        get => _recallLoggingOptions;
+        set => _recallLoggingOptions = Guard.AgainstNull(value);
+    }
+
+    public IServiceCollection Services { get; }
 }
