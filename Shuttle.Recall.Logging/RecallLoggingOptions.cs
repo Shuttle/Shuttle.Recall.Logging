@@ -4,7 +4,7 @@ namespace Shuttle.Recall.Logging;
 
 public class RecallLoggingOptions
 {
-    public List<string> PipelineEventTypes { get; set; } = new();
-    public List<string> PipelineTypes { get; set; } = new();
+    public List<TypeLoggingOptions> PipelineEventTypes { get; set; } = [];
+    public List<string> PipelineTypes { get; set; } = [];
     public bool Threading { get; set; }
 }

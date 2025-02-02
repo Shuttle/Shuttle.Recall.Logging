@@ -1,16 +1,17 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
 using Shuttle.Core.Contract;
 
 namespace Shuttle.Recall.Logging;
 
 public static class RecallLoggingOptionsExtensions
 {
-    public static RecallLoggingOptions AddPipelineEventType<T>(this RecallLoggingOptions recallLoggingOptions)
+    public static RecallLoggingOptions AddPipelineEventType<T>(this RecallLoggingOptions recallLoggingOptions, LogLevel? logLevel = null)
     {
-        return recallLoggingOptions.AddPipelineEventType(typeof(T));
+        return recallLoggingOptions.AddPipelineEventType(typeof(T), logLevel);
     }
 
-    public static RecallLoggingOptions AddPipelineEventType(this RecallLoggingOptions recallLoggingOptions, Type type)
+    public static RecallLoggingOptions AddPipelineEventType(this RecallLoggingOptions recallLoggingOptions, Type type, LogLevel? logLevel = null)
     {
         Guard.AgainstNull(type);
 
@@ -19,7 +20,7 @@ public static class RecallLoggingOptionsExtensions
             throw new InvalidOperationException(Resources.PipelineTypesNullException);
         }
 
-        recallLoggingOptions.PipelineEventTypes.Add(Guard.AgainstNullOrEmptyString(type.AssemblyQualifiedName));
+        recallLoggingOptions.PipelineEventTypes.Add(new() {Type = Guard.AgainstNullOrEmptyString(type.FullName), LogLevel = logLevel});
 
         return recallLoggingOptions;
     }
@@ -38,7 +39,7 @@ public static class RecallLoggingOptionsExtensions
             throw new InvalidOperationException(Resources.PipelineTypesNullException);
         }
 
-        recallLoggingOptions.PipelineTypes.Add(Guard.AgainstNullOrEmptyString(type.AssemblyQualifiedName));
+        recallLoggingOptions.PipelineTypes.Add(Guard.AgainstNullOrEmptyString(type.FullName));
 
         return recallLoggingOptions;
     }

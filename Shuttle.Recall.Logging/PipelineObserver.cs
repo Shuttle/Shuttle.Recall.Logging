@@ -13,14 +13,15 @@ public abstract class PipelineObserver<T> :
     IPipelineObserver<OnPipelineException>,
     IPipelineObserver<OnAbortPipeline>
 {
+    protected readonly ILogger<T> Logger;
+    protected readonly IRecallLoggingConfiguration RecallLoggingConfiguration;
+
     private readonly Dictionary<Type, int> _eventCounts = new();
-    private readonly ILogger<T> _logger;
-    private readonly IRecallLoggingConfiguration _recallLoggingConfiguration;
 
     protected PipelineObserver(ILogger<T> logger, IRecallLoggingConfiguration recallLoggingConfiguration)
     {
-        _logger = Guard.AgainstNull(logger);
-        _recallLoggingConfiguration = Guard.AgainstNull(recallLoggingConfiguration);
+        Logger = Guard.AgainstNull(logger);
+        RecallLoggingConfiguration = Guard.AgainstNull(recallLoggingConfiguration);
     }
 
     public async Task ExecuteAsync(IPipelineContext<OnAbortPipeline> pipelineContext)
@@ -36,7 +37,7 @@ public abstract class PipelineObserver<T> :
 
         var message = $"exception = '{pipelineContext.Pipeline.Exception?.AllMessages()}'";
 
-        _logger.LogError($"[{type.Name}] : pipeline = {pipelineContext.Pipeline.GetType().FullName}{(string.IsNullOrEmpty(message) ? string.Empty : $" / {message}")} / call count = {_eventCounts[type]} / managed thread id = {Environment.CurrentManagedThreadId}");
+        Logger.LogError($"[{type.Name}] : pipeline = {pipelineContext.Pipeline.GetType().FullName}{(string.IsNullOrEmpty(message) ? string.Empty : $" / {message}")} / call count = {_eventCounts[type]} / managed thread id = {Environment.CurrentManagedThreadId}");
 
         await Task.CompletedTask;
     }
@@ -55,16 +56,16 @@ public abstract class PipelineObserver<T> :
 
     protected async Task TraceAsync(IPipelineContext pipelineContext, string message = "")
     {
-        var type = Guard.AgainstNull(pipelineContext).GetType();
+        var type = Guard.AgainstNull(pipelineContext).EventType;
 
-        if (!_recallLoggingConfiguration.ShouldLogPipelineEventType(type))
+        if (!RecallLoggingConfiguration.ShouldLogPipelineEventType(type, LogLevel.Trace))
         {
             return;
         }
 
         Increment(type);
 
-        _logger.LogTrace($"[{type.Name}] : pipeline = {pipelineContext.Pipeline.GetType().FullName}{(string.IsNullOrEmpty(message) ? string.Empty : $" / {message}")} / call count = {_eventCounts[type]} / managed thread id = {Environment.CurrentManagedThreadId}");
+        Logger.LogTrace($"[{type.Name}] : pipeline = {pipelineContext.Pipeline.GetType().FullName}{(string.IsNullOrEmpty(message) ? string.Empty : $" / {message}")} / call count = {_eventCounts[type]} / managed thread id = {Environment.CurrentManagedThreadId}");
 
         await Task.CompletedTask;
     }

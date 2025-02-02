@@ -9,19 +9,19 @@ namespace Shuttle.Recall.Logging;
 
 public class RecallLoggingConfiguration : IRecallLoggingConfiguration
 {
-    private readonly List<Type> _pipelineEventTypes = new();
-    private readonly List<Type> _pipelineTypes = new();
+    private readonly List<string> _pipelineEventTypes = [];
+    private readonly List<string> _pipelineTypes = [];
 
-    public RecallLoggingConfiguration(IOptions<RecallLoggingOptions> recallLoggingOptions, ILogger<RecallLoggingConfiguration> logger)
+    public RecallLoggingConfiguration(ILogger<RecallLoggingConfiguration> logger, IOptions<RecallLoggingOptions> recallLoggingOptions)
     {
         Guard.AgainstNull(Guard.AgainstNull(recallLoggingOptions).Value);
-        Guard.AgainstNull(logger, nameof(logger));
+        Guard.AgainstNull(logger);
 
         foreach (var pipelineType in recallLoggingOptions.Value.PipelineTypes)
         {
             try
             {
-                _pipelineTypes.Add(Guard.AgainstNull(Type.GetType(pipelineType)));
+                _pipelineTypes.Add(pipelineType);
             }
             catch (Exception ex)
             {
@@ -33,7 +33,7 @@ public class RecallLoggingConfiguration : IRecallLoggingConfiguration
         {
             try
             {
-                _pipelineEventTypes.Add(Guard.AgainstNull(Type.GetType(pipelineEventType)));
+                _pipelineEventTypes.Add($"{pipelineEventType.Type}-{pipelineEventType.LogLevel?.ToString() ?? "*"}");
             }
             catch (Exception ex)
             {
@@ -46,13 +46,13 @@ public class RecallLoggingConfiguration : IRecallLoggingConfiguration
     {
         Guard.AgainstNull(pipelineType);
 
-        return !_pipelineTypes.Any() || _pipelineTypes.Contains(pipelineType);
+        return !_pipelineTypes.Any() || _pipelineTypes.Contains(Guard.AgainstNullOrEmptyString(pipelineType.FullName));
     }
 
-    public bool ShouldLogPipelineEventType(Type pipelineEventType)
+    public bool ShouldLogPipelineEventType(Type pipelineEventType, LogLevel? logLevel = null)
     {
         Guard.AgainstNull(pipelineEventType);
 
-        return !_pipelineEventTypes.Any() || _pipelineEventTypes.Contains(pipelineEventType);
+        return !_pipelineEventTypes.Any() || _pipelineEventTypes.Contains($"{Guard.AgainstNullOrEmptyString(pipelineEventType.FullName)}-{logLevel?.ToString() ?? "*"}");
     }
 }
