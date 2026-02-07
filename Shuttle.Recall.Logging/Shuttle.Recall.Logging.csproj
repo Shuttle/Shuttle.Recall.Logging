@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Shuttle.Recall" Version="21.0.0-alpha" />
+    <PackageReference Include="Shuttle.Recall" Version="21.0.1-beta" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,7 +33,7 @@
 
   <PropertyGroup>
     <Description>Provides non-intrusive logging for Shuttle.Recall components.</Description>
-    <Version>21.0.0-alpha</Version>
+    <Version>21.0.1-beta</Version>
     <PackageProjectUrl>https://github.com/Shuttle/Shuttle.Recall.Logging</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Shuttle/Shuttle.Recall.Logging.git</RepositoryUrl>
     <PackageTags></PackageTags>
